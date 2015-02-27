@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.30319.1</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F26E3EAB-1187-4C91-A41E-2BE3D0FFE4B7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ToolFunction</RootNamespace>
+    <AssemblyName>ToolFunction</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Data.v7.2, Version=7.2.5.0, Culture=neutral, PublicKeyToken=9b171c9fd64da1d1">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v7.2, Version=7.2.5.0, Culture=neutral, PublicKeyToken=9b171c9fd64da1d1">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraEditors.v7.2, Version=7.2.5.0, Culture=neutral, PublicKeyToken=9b171c9fd64da1d1">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.InfoPath.Xml, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>.\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>.\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.configuration">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.OracleClient">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Design">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="clsProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IBasePO.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="uctlComboxcs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uctlComboxcs.Designer.cs">
+      <DependentUpon>uctlComboxcs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="uctlIcon.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uctlIcon.Designer.cs">
+      <DependentUpon>uctlIcon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="uctlIcon2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uctlIcon2.Designer.cs">
+      <DependentUpon>uctlIcon2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="uctlMessageBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uctlMessageBox.Designer.cs">
+      <DependentUpon>uctlMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="uctlPleaseWaiting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="uctlPleaseWaiting.Designer.cs">
+      <DependentUpon>uctlPleaseWaiting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="CommonFunction.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="uctlComboxcs.resx">
+      <DependentUpon>uctlComboxcs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uctlIcon.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>uctlIcon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uctlIcon2.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>uctlIcon2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uctlMessageBox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>uctlMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="uctlPleaseWaiting.resx">
+      <DependentUpon>uctlPleaseWaiting.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pleasewait.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>7</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="版本升级说明.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

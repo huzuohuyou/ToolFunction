@@ -1,0 +1,14 @@
+﻿
+注意：对于Office的操作应生成x86版本的dll
+
+日期：2015-02-15
+版本：1.0.0.2
+内容：OracleConnection为X64版本，OleDbConnection应为X86，服务器应安装odp.net数据驱动
+
+日期：2015-02-15
+版本：1.0.0.3
+内容：增加OleDbConnection 和 OracleConnection的同时支持，方法为OleExecuteBySQL & OraExecuteBySQL
+
+日期：2015-02-16
+版本：1.0.0.4
+内容：设置参数的传参符号位 :parameterName ,参数不带单引号
