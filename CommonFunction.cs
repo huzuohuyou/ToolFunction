@@ -16,6 +16,7 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Data.Odbc;
 
 namespace ToolFunction
 {
@@ -34,6 +35,9 @@ namespace ToolFunction
         public static OracleConnection m_oraConn = null;
         public static OracleCommand m_oraCmd = null;
         public static OracleTransaction m_oraTrans = null;
+        public static OdbcConnection m_odbcConn = null;
+        public static OdbcCommand m_odbcCmd = null;
+        public static OdbcTransaction m_odbcTrans = null;
         public static SqlConnection m_sqlConn = null;
         public static SqlCommand m_sqlCmd = null;
         public static SqlTransaction m_sqlTrans = null;
@@ -745,7 +749,7 @@ namespace ToolFunction
         /// <param name="p_strTablename">产生的datatable名称</param>
         /// <param name="cmd">cmd</param>
         /// <returns>返回表</returns>
-        static public DataTable OleExecuteBySQL(string p_strSql, Dictionary<string, string> p_dicDictionary, string p_strTablename)
+        static public DataTable OleExecuteBySQL(string p_strSql, SortedDictionary<string, string> p_dicDictionary, string p_strTablename)
         {
             if ("" == m_strConnectionString)
             {
@@ -755,7 +759,7 @@ namespace ToolFunction
             m_oleConn = new OleDbConnection(m_strConnectionString);
             m_oleCmd = m_oleConn.CreateCommand();
             m_oleConn.Open();
-            ChangeSelectCommand(p_strSql, p_dicDictionary, ref m_oleCmd);
+            OleChangeSelectCommand(p_strSql, p_dicDictionary, ref m_oleCmd);
             try
             {
                 using (OleDbDataAdapter adapter = new OleDbDataAdapter(m_oleCmd))
@@ -773,6 +777,50 @@ namespace ToolFunction
                 m_oleCmd.Dispose();
             }
             return _dtTable;
+        }
+
+
+        /// <summary>
+        /// OdbcDb驱动 执行查询操作 x86平台
+        /// </summary>
+        /// <param name="p_strSql">查询sql语句</param>
+        /// <param name="p_dicDictionary">字典参数</param>
+        /// <param name="p_strTablename">产生的datatable名称</param>
+        /// <param name="cmd">cmd</param>
+        /// <returns>返回表</returns>
+        static public DataTable OdbcExecuteBySQL(string p_strSql, Dictionary<string, string> p_dicDictionary, string p_strTablename)
+        {
+            if ("" == m_strConnectionString)
+            {
+                MessageBox.Show("未设置数据库连接字符串！");
+            }
+            DataTable _dtTable = new DataTable(p_strTablename);
+            m_odbcConn = new OdbcConnection(m_strConnectionString);
+            m_odbcCmd = m_odbcConn.CreateCommand();
+            m_odbcConn.Open();
+            OdbcChangeSelectCommand(p_strSql, p_dicDictionary, ref m_odbcCmd);
+            try
+            {
+                using (OdbcDataAdapter adapter = new OdbcDataAdapter(m_odbcCmd))
+                {
+                    adapter.Fill(_dtTable);
+                }
+            }
+            catch (Exception exp)
+            {
+                WriteLog(exp, p_strSql);
+            }
+            finally
+            {
+                m_odbcConn.Dispose();
+                m_odbcCmd.Dispose();
+            }
+            return _dtTable;
+        }
+
+        private static void OdbcChangeSelectCommand(string p_strSql, Dictionary<string, string> p_dicDictionary, ref OdbcCommand m_odbcCmd)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -896,7 +944,7 @@ namespace ToolFunction
         /// <param name="p_strSql">执行的sql</param>
         /// <param name="dictionary">参数字典</param>
         /// <returns>影响的结果条数</returns>
-        static public int OleExecuteTrans(string p_strSql, Dictionary<string, string> p_dictParam)
+        static public int OleExecuteTrans(string p_strSql, SortedDictionary<string, string> p_dictParam)
         {
             if (m_oleConn == null)
             {
@@ -907,7 +955,7 @@ namespace ToolFunction
                 return 0;
             }
             int n = 0;
-            ChangeSelectCommand(p_strSql, p_dictParam, ref m_oleCmd);
+            OleChangeSelectCommand(p_strSql, p_dictParam, ref m_oleCmd);
             try
             {
                 n = m_oleCmd.ExecuteNonQuery();
@@ -958,7 +1006,7 @@ namespace ToolFunction
                 return 0;
             }
             int n = 0;
-            ChangeSelectCommand(p_strSql, p_dictParam, ref m_oraCmd);
+            OraChangeSelectCommand(p_strSql, p_dictParam, ref m_oraCmd);
             try
             {
                 n = m_oleCmd.ExecuteNonQuery();
@@ -997,13 +1045,13 @@ namespace ToolFunction
         /// <param name="p_dictParam">字典参数</param>
         /// <param name="cmd">cmd</param>
         /// <returns>返回结果</returns>
-        static public int OleExecuteNonQuery(string p_strSql, Dictionary<string, string> p_dictParam)
+        static public int OleExecuteNonQuery(string p_strSql, SortedDictionary<string, string> p_dictParam)
         {
             int _iExeCount = 0;
             m_oleConn = new OleDbConnection(m_strConnectionString);
             m_oleCmd = m_oleConn.CreateCommand();
             m_oleConn.Open();
-            ChangeSelectCommand(p_strSql, p_dictParam, ref m_oleCmd);
+            OleChangeSelectCommand(p_strSql, p_dictParam, ref m_oleCmd);
             try
             {
                 _iExeCount = m_oleCmd.ExecuteNonQuery();
@@ -1021,6 +1069,37 @@ namespace ToolFunction
             return _iExeCount;
         }
 
+        /// <summary>
+        /// 采用Odbc方式驱动 执行增，删，改操作 x86平台
+        /// </summary>
+        /// <param name="p_strSql">操作的sql</param>
+        /// <param name="p_dictParam">字典参数</param>
+        /// <param name="cmd">cmd</param>
+        /// <returns>返回结果</returns>
+        static public int OdbcExecuteNonQuery(string p_strSql, Dictionary<string, string> p_dictParam)
+        {
+            int _iExeCount = 0;
+            m_odbcConn = new OdbcConnection(m_strConnectionString);
+            m_odbcCmd = m_odbcConn.CreateCommand();
+            m_odbcConn.Open();
+            OdbcChangeSelectCommand(p_strSql, p_dictParam, ref m_odbcCmd);
+            try
+            {
+                _iExeCount = m_odbcCmd.ExecuteNonQuery();
+            }
+            catch (Exception exp)
+            {
+                WriteLog(exp, p_strSql);
+                _iExeCount = -1;
+            }
+            finally
+            {
+                m_odbcConn.Dispose();
+                m_odbcCmd.Dispose();
+            }
+            return _iExeCount;
+        }
+
 
         /// <summary>
         /// 采用.net1.1 里的oracleclient驱动 执行增，删，改操作
@@ -1034,8 +1113,8 @@ namespace ToolFunction
             int _iExeCount = 0;
             m_oraConn = new OracleConnection(m_strConnectionString);
             m_oraCmd = m_oraConn.CreateCommand();
-            m_oleConn.Open();
-            ChangeSelectCommand(p_strSql, p_dictParam, ref m_oraCmd);
+            m_oraConn.Open();
+            OraChangeSelectCommand(p_strSql, p_dictParam, ref m_oraCmd);
             try
             {
                 _iExeCount = m_oraCmd.ExecuteNonQuery();
@@ -1090,24 +1169,24 @@ namespace ToolFunction
         /// <returns></returns>
         public static void SetConnectionString()
         {
-            string _strDBType = ConfigurationManager.AppSettings["DBType"];
-            if ("Oracle" == _strDBType)
-            {
-                m_strConnectionString = ConfigurationManager.ConnectionStrings["Oracle"].ConnectionString;
-            }
-            else if ("SQLServer" == _strDBType)
-            {
-                m_strConnectionString = ConfigurationManager.ConnectionStrings["SQLServer"].ConnectionString;
-            }
-            else if ("MySQL" == _strDBType)
-            {
-                m_strConnectionString = ConfigurationManager.ConnectionStrings["MySQL"].ConnectionString;
-            }
-            else
-            {
-                MessageBox.Show("未设置[DBType]或数据库类型不是[Oracle][SQLServer][MySQL]!");
-            }
-           
+            //string _strDBType = ConfigurationManager.AppSettings["DBType"];
+            //if ("Oracle" == _strDBType)
+            //{
+            //    m_strConnectionString = ConfigurationManager.ConnectionStrings["Oracle"].ConnectionString;
+            //}
+            //else if ("SQLServer" == _strDBType)
+            //{
+            //    m_strConnectionString = ConfigurationManager.ConnectionStrings["SQLServer"].ConnectionString;
+            //}
+            //else if ("MySQL" == _strDBType)
+            //{
+            //    m_strConnectionString = ConfigurationManager.ConnectionStrings["MySQL"].ConnectionString;
+            //}
+            //else
+            //{
+            //    MessageBox.Show("未设置[DBType]或数据库类型不是[Oracle][SQLServer][MySQL]!");
+            //}
+            m_strConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
         }
 
         /// <summary>
@@ -1117,39 +1196,60 @@ namespace ToolFunction
         /// <param name="p_dictParam">参数字典</param>
         /// <param name="p_oleCmd">cmd</param>
         /// <returns>返回是否替换参数成功</returns>
-        static public bool ChangeSelectCommand(string p_strSql, Dictionary<string, string> p_dictParam, ref OleDbCommand p_oleCmd)
+        public static void OraChangeSelectCommand(string p_strSql, Dictionary<string, string> p_dictParam, ref OracleCommand p_oleCmd)
         {
 
             p_oleCmd.Parameters.Clear();
             string sqltxt = p_strSql;
-            int nIndex = sqltxt.IndexOf(':');
+            int nIndex = sqltxt.IndexOf('@');
             while (-1 != nIndex)
             {
                 if (nIndex > -1)
                 {
                     foreach (object obj in p_dictParam.Keys)
                     {
-                        string strParm = ":" + obj.ToString();
+                        string strParm = "@" + obj.ToString();
                         int n = sqltxt.IndexOf(strParm);
                         if (nIndex == sqltxt.IndexOf(strParm, nIndex))
                         {
                             string values;
                             p_dictParam.TryGetValue(obj.ToString(), out values);
-                            p_oleCmd.Parameters.Add(new OleDbParameter(strParm, values));
+                            //p_oleCmd.Parameters.Add(new OleDbParameter(strParm, values));
+                            p_oleCmd.Parameters.Add(strParm, OleDbType.VarChar).Value = values;
 
                         }
                     }
                 }
                 if (sqltxt.Length > nIndex)
                 {
-                    nIndex = sqltxt.IndexOf(':', nIndex + 1);
+                    nIndex = sqltxt.IndexOf('@', nIndex + 1);
                 }
                 else
                     nIndex = -1;
             }
             p_oleCmd.CommandText = sqltxt;
-            return true;
         }
+
+        ///// <summary>
+        ///// 替换sql语句参数，并给cmd赋值,绑定变量
+        ///// </summary>
+        ///// <param name="p_strSql">sql语句</param>
+        ///// <param name="p_dictParam">参数字典</param>
+        ///// <param name="p_oleCmd">cmd</param>
+        ///// <returns>返回是否替换参数成功</returns>
+        public static void OleChangeSelectCommand(string p_strSql, SortedDictionary<string, string> p_dictParam, ref OleDbCommand p_oleCmd)
+        {
+            p_oleCmd.Parameters.Clear();
+            foreach (object obj in p_dictParam.Keys)
+            {
+                string strParm =   obj.ToString();
+                string values;
+                p_dictParam.TryGetValue(obj.ToString(), out values);
+                p_oleCmd.Parameters.Add(strParm, OleDbType.VarChar).Value = values;
+            }
+            p_oleCmd.CommandText = p_strSql;
+        }
+
 
         /// <summary>
         /// 替换sql语句参数，并给cmd赋值,绑定变量
