@@ -17,3 +17,7 @@
 版本：1.0.0.5
 内容：1.测试Oledb 参数化sql执行，用？ 作为占位符 ；oracleclient用:参数名 作为占位符 
      2.增加odbc 数据库执行
+
+日期：2015-03-02
+版本：1.0.0.6
+内容：增加 OdbcChangeSelectCommand 方法

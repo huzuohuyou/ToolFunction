@@ -818,9 +818,41 @@ namespace ToolFunction
             return _dtTable;
         }
 
+        /// <summary>
+        /// odbc 参数化sql
+        /// </summary>
+        /// <param name="p_strSql">sql语句</param>
+        /// <param name="p_dicDictionary">参数字典</param>
+        /// <param name="m_odbcCmd">cmd</param>
         private static void OdbcChangeSelectCommand(string p_strSql, Dictionary<string, string> p_dicDictionary, ref OdbcCommand m_odbcCmd)
         {
-            throw new NotImplementedException();
+            m_odbcCmd.Parameters.Clear();
+            string sqltxt = p_strSql;
+            int nIndex = sqltxt.IndexOf('@');
+            while (-1 != nIndex)
+            {
+                if (nIndex > -1)
+                {
+                    foreach (object obj in p_dicDictionary.Keys)
+                    {
+                        string strParm = "@" + obj.ToString();
+                        int n = sqltxt.IndexOf(strParm);
+                        if (nIndex == sqltxt.IndexOf(strParm, nIndex))
+                        {
+                            string values;
+                            p_dicDictionary.TryGetValue(obj.ToString(), out values);
+                            m_odbcCmd.Parameters.Add(new OleDbParameter(strParm, values));
+                        }
+                    }
+                }
+                if (sqltxt.Length > nIndex)
+                {
+                    nIndex = sqltxt.IndexOf('@', nIndex + 1);
+                }
+                else
+                    nIndex = -1;
+            }
+            m_odbcCmd.CommandText = sqltxt;
         }
 
         /// <summary>
