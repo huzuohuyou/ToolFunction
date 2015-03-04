@@ -87,6 +87,26 @@ namespace ToolFunction
             }
 
         }
+
+        /// <summary>
+        /// 反射调取构造参数
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="mymethod"></param>
+        /// <param name="param"></param>
+        public static void SetProperitys(Object obj, string mymethod, object[] param) {
+            try
+            {
+                Type t = obj.GetType();
+                MethodInfo mi = t.GetMethod(mymethod);
+                mi.Invoke(obj, param);
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex.ToString());
+            }
+        }
+
         /// <summary>
         /// 用FileStream写文件
         /// </summary>
@@ -1228,38 +1248,38 @@ namespace ToolFunction
         /// <param name="p_dictParam">参数字典</param>
         /// <param name="p_oleCmd">cmd</param>
         /// <returns>返回是否替换参数成功</returns>
-        public static void OraChangeSelectCommand(string p_strSql, Dictionary<string, string> p_dictParam, ref OracleCommand p_oleCmd)
+        public static void OraChangeSelectCommand(string p_strSql, Dictionary<string, string> p_dictParam, ref OracleCommand p_oraCmd)
         {
 
-            p_oleCmd.Parameters.Clear();
+            p_oraCmd.Parameters.Clear();
             string sqltxt = p_strSql;
-            int nIndex = sqltxt.IndexOf('@');
+            int nIndex = sqltxt.IndexOf(':');
             while (-1 != nIndex)
             {
                 if (nIndex > -1)
                 {
                     foreach (object obj in p_dictParam.Keys)
                     {
-                        string strParm = "@" + obj.ToString();
+                        string strParm = ":" + obj.ToString();
                         int n = sqltxt.IndexOf(strParm);
                         if (nIndex == sqltxt.IndexOf(strParm, nIndex))
                         {
                             string values;
                             p_dictParam.TryGetValue(obj.ToString(), out values);
                             //p_oleCmd.Parameters.Add(new OleDbParameter(strParm, values));
-                            p_oleCmd.Parameters.Add(strParm, OleDbType.VarChar).Value = values;
+                            p_oraCmd.Parameters.Add(strParm, OleDbType.VarChar).Value = values;
 
                         }
                     }
                 }
                 if (sqltxt.Length > nIndex)
                 {
-                    nIndex = sqltxt.IndexOf('@', nIndex + 1);
+                    nIndex = sqltxt.IndexOf(':', nIndex + 1);
                 }
                 else
                     nIndex = -1;
             }
-            p_oleCmd.CommandText = sqltxt;
+            p_oraCmd.CommandText = sqltxt;
         }
 
         ///// <summary>
