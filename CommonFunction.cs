@@ -89,17 +89,38 @@ namespace ToolFunction
         }
 
         /// <summary>
-        /// 反射调取构造参数
+        /// 反射调取属性构造器
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="mymethod"></param>
-        /// <param name="param"></param>
-        public static void SetProperitys(Object obj, string mymethod, object[] param) {
+        /// <param name="obj">类</param>
+        /// <param name="mymethod">方法名</param>
+        /// <param name="param">方法参数</param>
+        public static void SetProperitys(Object obj, string mymethod, object[] param)
+        {
             try
             {
                 Type t = obj.GetType();
+
                 MethodInfo mi = t.GetMethod(mymethod);
                 mi.Invoke(obj, param);
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 反射调取属性封装字段赋值
+        /// </summary>
+        /// <param name="obj">类</param>
+        /// <param name="p_strProperityName">属性名</param>
+        /// <param name="p_strValue">属性值</param>
+        public static void SetProperitys(Object obj, string p_strProperityName,  string p_strValue)
+        {
+            try
+            {
+                Type t = obj.GetType();
+                t.GetProperty(p_strProperityName).SetValue(obj, p_strValue, null);
             }
             catch (Exception ex)
             {
