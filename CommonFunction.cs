@@ -376,80 +376,80 @@ namespace ToolFunction
         #endregion
 
         #region EXCEL与datatable相互转换
-        /// <summary>
-        /// 将数据集导出成为excel
-        /// </summary>
-        /// <param name="name">导出excel的名称</param>
-        /// <param name="ds">所导出的数据集</param>
-        public static void AddExcel(string name, DataTable dt)
-        {
-            string fileName = name + ".xls";
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            int rowIndex = 1;
-            int colIndex = 0;
-            excel.Application.Workbooks.Add(true);
-            foreach (DataColumn col in dt.Columns)
-            {
-                colIndex++;
-                excel.Cells[1, colIndex] = col.ColumnName;
-            }
+        ///// <summary>
+        ///// 将数据集导出成为excel
+        ///// </summary>
+        ///// <param name="name">导出excel的名称</param>
+        ///// <param name="ds">所导出的数据集</param>
+        //public static void AddExcel(string name, DataTable dt)
+        //{
+        //    string fileName = name + ".xls";
+        //    Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
+        //    int rowIndex = 1;
+        //    int colIndex = 0;
+        //    excel.Application.Workbooks.Add(true);
+        //    foreach (DataColumn col in dt.Columns)
+        //    {
+        //        colIndex++;
+        //        excel.Cells[1, colIndex] = col.ColumnName;
+        //    }
 
-            foreach (DataRow row in dt.Rows)
-            {
-                rowIndex++;
-                colIndex = 0;
-                for (colIndex = 0; colIndex < dt.Columns.Count; colIndex++)
-                {
-                    excel.Cells[rowIndex, colIndex + 1] = row[colIndex].ToString();
-                }
-            }
+        //    foreach (DataRow row in dt.Rows)
+        //    {
+        //        rowIndex++;
+        //        colIndex = 0;
+        //        for (colIndex = 0; colIndex < dt.Columns.Count; colIndex++)
+        //        {
+        //            excel.Cells[rowIndex, colIndex + 1] = row[colIndex].ToString();
+        //        }
+        //    }
 
-            excel.Visible = false;
-            excel.ActiveWorkbook.SaveAs(fileName, Microsoft.Office.Interop.Excel.XlFileFormat.xlExcel7, null, null, false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, null, null, null, null, null);
-            excel.Quit();
-            excel = null;
-            GC.Collect();//垃圾回收 
-        }
+        //    excel.Visible = false;
+        //    excel.ActiveWorkbook.SaveAs(fileName, Microsoft.Office.Interop.Excel.XlFileFormat.xlExcel7, null, null, false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, null, null, null, null, null);
+        //    excel.Quit();
+        //    excel = null;
+        //    GC.Collect();//垃圾回收 
+        //}
 
-        public static void SaveAsExcel(string name, DataTable dt)
-        {
-            OleDbConnection cnnxls = new OleDbConnection(string.Format(excelstring, name));
-            string insertsql = "";
-            string insertcolumnstring = "";
-            string insertvaluestring = "";
-            string fileName = name + ".xls";
-            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-            excel.Application.Workbooks.Add(true);
-            int colIndex = 0;
-            foreach (DataColumn col in dt.Columns)
-            {
-                colIndex++;
-                excel.Cells[1, colIndex] = col.ColumnName;
-                insertcolumnstring += string.Format("{0},", col.ColumnName);
-            }
-            excel.ActiveWorkbook.SaveAs(fileName, Microsoft.Office.Interop.Excel.XlFileFormat.xlExcel7, null, null, false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, null, null, null, null, null);
+        //public static void SaveAsExcel(string name, DataTable dt)
+        //{
+        //    OleDbConnection cnnxls = new OleDbConnection(string.Format(excelstring, name));
+        //    string insertsql = "";
+        //    string insertcolumnstring = "";
+        //    string insertvaluestring = "";
+        //    string fileName = name + ".xls";
+        //    Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
+        //    excel.Application.Workbooks.Add(true);
+        //    int colIndex = 0;
+        //    foreach (DataColumn col in dt.Columns)
+        //    {
+        //        colIndex++;
+        //        excel.Cells[1, colIndex] = col.ColumnName;
+        //        insertcolumnstring += string.Format("{0},", col.ColumnName);
+        //    }
+        //    excel.ActiveWorkbook.SaveAs(fileName, Microsoft.Office.Interop.Excel.XlFileFormat.xlExcel7, null, null, false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, null, null, null, null, null);
 
-            //新增记录  
-            //conn.execute(sql);
+        //    //新增记录  
+        //    //conn.execute(sql);
 
-            insertcolumnstring = insertcolumnstring.Trim(',');
-            foreach (DataRow row in dt.Rows)
-            {
-                foreach (DataColumn dc in dt.Columns)
-                {
-                    row[dc].ToString();
-                    insertvaluestring += string.Format("'{0}',", row[dc].ToString().Replace("'", "''"));
-                }
-                string sql = string.Format("insert into [Sheet1$]({0}) values({1})", insertcolumnstring, insertvaluestring);
-                OleDbDataAdapter myDa = new OleDbDataAdapter(sql, cnnxls);
-                myDa.InsertCommand.ExecuteNonQuery();
-            }
-            excel.Visible = false;
-            //excel.ActiveWorkbook.SaveAs(fileName, Microsoft.Office.Interop.Excel.XlFileFormat.xlExcel7, null, null, false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, null, null, null, null, null);
-            excel.Quit();
-            excel = null;
-            GC.Collect();//垃圾回收 
-        }
+        //    insertcolumnstring = insertcolumnstring.Trim(',');
+        //    foreach (DataRow row in dt.Rows)
+        //    {
+        //        foreach (DataColumn dc in dt.Columns)
+        //        {
+        //            row[dc].ToString();
+        //            insertvaluestring += string.Format("'{0}',", row[dc].ToString().Replace("'", "''"));
+        //        }
+        //        string sql = string.Format("insert into [Sheet1$]({0}) values({1})", insertcolumnstring, insertvaluestring);
+        //        OleDbDataAdapter myDa = new OleDbDataAdapter(sql, cnnxls);
+        //        myDa.InsertCommand.ExecuteNonQuery();
+        //    }
+        //    excel.Visible = false;
+        //    //excel.ActiveWorkbook.SaveAs(fileName, Microsoft.Office.Interop.Excel.XlFileFormat.xlExcel7, null, null, false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, null, null, null, null, null);
+        //    excel.Quit();
+        //    excel = null;
+        //    GC.Collect();//垃圾回收 
+        //}
 
         #endregion
 
