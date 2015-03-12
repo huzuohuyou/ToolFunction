@@ -21,7 +21,7 @@ namespace ToolFunction
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            lab_mess.Text ="正在插入第" +clsProperty.insertcount.ToString()+"条数据";
+            lab_mess.Text ="正在插入第" +PublicProperty.insertcount.ToString()+"条数据";
         }
     }
 }

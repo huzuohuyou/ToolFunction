@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ToolFunction
 {
-    public class clsProperty
+    public class PublicProperty
     {
         public static int insertcount = 0;
     }

@@ -275,26 +275,49 @@ namespace ToolFunction
         #endregion
 
         #region 窗体域usercontrol的绑定
+
         /// <summary>
-        /// 简单的代码重用。因为每次显示窗体的代码都是一样的。
+        /// 弹出窗体到界面，带两像素边框
         /// </summary>
         /// <param name="f">容器窗体</param>
         /// <param name="uc">内容容器</param>
-        public static DialogResult ShowForm( UserControl uc)
+        public static DialogResult ShowForm(UserControl uc)
         {
             Form f = new Form();
             uc.Dock = DockStyle.None;
-            f.Size = new Size(uc.Width + 2, uc.Height + 2);
+            f.Size = new Size(uc.Width + 3, uc.Height + 3);
             f.BackColor = Color.Blue;
             f.FormBorderStyle = FormBorderStyle.None;
             f.StartPosition = FormStartPosition.CenterParent;
-            uc.Padding = new Padding(2,2,0,0);
+            uc.Padding = new Padding(2, 2, 0, 0);
             uc.BackColor = Color.White;
             uc.Left = 1;
             uc.Top = 1;
             f.Controls.Add(uc);
             return f.ShowDialog();
         }
+
+
+        /// <summary>
+        /// 弹出窗体到界面，带两像素边框,oldborderwidth应为偶数
+        /// </summary>
+        /// <param name="f">容器窗体</param>
+        /// <param name="uc">内容容器</param>
+        public static DialogResult ShowForm(UserControl uc,Color frmBackColor, Color ucBackColor, int oldborderwidth)
+        {
+            Form f = new Form();
+            uc.Dock = DockStyle.None;
+            f.Size = new Size(uc.Width + oldborderwidth, uc.Height + oldborderwidth);
+            f.BackColor = frmBackColor;
+            f.FormBorderStyle = FormBorderStyle.None;
+            f.StartPosition = FormStartPosition.CenterParent;
+            uc.BackColor = ucBackColor;
+            uc.Left = oldborderwidth/2;
+            uc.Top = oldborderwidth/2;
+            f.Controls.Add(uc);
+            return f.ShowDialog();
+        }
+
         /// <summary>
         /// 添加一个用户控件到一个1024*768的窗体中
         /// </summary>
@@ -687,6 +710,32 @@ namespace ToolFunction
 
         #region 操作数据库
 
+        public static DataSet DBExecuteBySQL(string p_strSql, Dictionary<string, string> p_dicDictionary, string p_strTablename)
+        {
+            DataSet _dsReault = new DataSet();
+            ConnectionStringSettings _strConnSeting = ConfigurationManager.ConnectionStrings["ConnectionString"];
+            DbProviderFactory _dbFact = DbProviderFactories.GetFactory(_strConnSeting.ProviderName);
+            using (DbConnection connEmr = _dbFact.CreateConnection())
+            {
+                connEmr.ConnectionString = _strConnSeting.ConnectionString;
+                connEmr.Open();
+                try
+                {
+                    DbCommand _dbCmd = connEmr.CreateCommand();
+                    DbDataAdapter _dbAdap = _dbFact.CreateDataAdapter();
+                    _dbCmd.CommandText = p_strSql;
+                    _dbAdap.SelectCommand = _dbCmd;
+                    _dbAdap.Fill(_dsReault);
+                }
+                catch (Exception exp)
+                {
+                    WriteLog(exp, p_strSql);
+                }
+            }
+            return _dsReault;
+        }
+
+
         /// <summary>
         /// 将MongoCursor转化为DataTable《未实现》
         /// </summary>
@@ -792,6 +841,7 @@ namespace ToolFunction
         /// <returns>返回表</returns>
         static public DataTable OleExecuteBySQL(string p_strSql, SortedDictionary<string, string> p_dicDictionary, string p_strTablename)
         {
+            SetConnectionString();
             if ("" == m_strConnectionString)
             {
                 MessageBox.Show("未设置数据库连接字符串！");
@@ -831,6 +881,7 @@ namespace ToolFunction
         /// <returns>返回表</returns>
         static public DataTable OdbcExecuteBySQL(string p_strSql, Dictionary<string, string> p_dicDictionary, string p_strTablename)
         {
+            SetConnectionString();
             if ("" == m_strConnectionString)
             {
                 MessageBox.Show("未设置数据库连接字符串！");
@@ -944,6 +995,7 @@ namespace ToolFunction
         /// <returns>返回表</returns>
         static public DataTable OraExecuteBySQL(string p_strSql, Dictionary<string, string> p_dicDictionary, string p_strTablename)
         {
+            SetConnectionString();
             if ("" == m_strConnectionString)
             {
                 MessageBox.Show("未设置数据库连接字符串！");
@@ -1120,6 +1172,7 @@ namespace ToolFunction
         /// <returns>返回结果</returns>
         static public int OleExecuteNonQuery(string p_strSql, SortedDictionary<string, string> p_dictParam)
         {
+            SetConnectionString();
             int _iExeCount = 0;
             m_oleConn = new OleDbConnection(m_strConnectionString);
             m_oleCmd = m_oleConn.CreateCommand();
@@ -1151,6 +1204,7 @@ namespace ToolFunction
         /// <returns>返回结果</returns>
         static public int OdbcExecuteNonQuery(string p_strSql, Dictionary<string, string> p_dictParam)
         {
+            SetConnectionString();
             int _iExeCount = 0;
             m_odbcConn = new OdbcConnection(m_strConnectionString);
             m_odbcCmd = m_odbcConn.CreateCommand();
@@ -1183,6 +1237,7 @@ namespace ToolFunction
         /// <returns>返回结果</returns>
         static public int OraExecuteNonQuery(string p_strSql, Dictionary<string, string> p_dictParam)
         {
+            SetConnectionString();
             int _iExeCount = 0;
             m_oraConn = new OracleConnection(m_strConnectionString);
             m_oraCmd = m_oraConn.CreateCommand();
