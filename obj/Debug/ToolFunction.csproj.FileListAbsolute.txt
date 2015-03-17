@@ -121,4 +121,3 @@ E:\Github\ToolFunction\obj\Debug\ToolFunction.Properties.Resources.resources
 E:\Github\ToolFunction\obj\Debug\ToolFunction.csproj.GenerateResource.Cache
 E:\Github\ToolFunction\obj\Debug\ToolFunction.dll
 E:\Github\ToolFunction\obj\Debug\ToolFunction.pdb
-E:\Github\ToolFunction\obj\Debug\ToolFunction.csprojResolveAssemblyReference.cache

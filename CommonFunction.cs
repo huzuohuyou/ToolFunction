@@ -358,6 +358,9 @@ namespace ToolFunction
                 tc.SelectTab(title);
                 return;
             }
+            //Panel p = new Panel();
+            //p.Controls.Add(c);
+            //c.Dock = DockStyle.Fill;
             TabPage tp = new TabPage(title);
             tp.Name = title;
             dicpage.Add(title, tp);
