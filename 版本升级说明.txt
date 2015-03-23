@@ -33,3 +33,7 @@
 日期：2015-03-17
 版本：2.0.0.1
 内容：增加窗体现在在tabcontrol中功能。
+
+日期：2015-03-23
+版本：2.0.0.2
+内容：增加SetConnectionString(string p_strDataSource, string p_strUserID, string p_strPassword)方法外部组成连接字符串。

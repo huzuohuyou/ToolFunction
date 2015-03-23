@@ -998,7 +998,6 @@ namespace ToolFunction
         /// <returns>返回表</returns>
         static public DataTable OraExecuteBySQL(string p_strSql, Dictionary<string, string> p_dicDictionary, string p_strTablename)
         {
-            SetConnectionString();
             if ("" == m_strConnectionString)
             {
                 MessageBox.Show("未设置数据库连接字符串！");
@@ -1240,7 +1239,6 @@ namespace ToolFunction
         /// <returns>返回结果</returns>
         static public int OraExecuteNonQuery(string p_strSql, Dictionary<string, string> p_dictParam)
         {
-            SetConnectionString();
             int _iExeCount = 0;
             m_oraConn = new OracleConnection(m_strConnectionString);
             m_oraCmd = m_oraConn.CreateCommand();
@@ -1318,6 +1316,20 @@ namespace ToolFunction
             //    MessageBox.Show("未设置[DBType]或数据库类型不是[Oracle][SQLServer][MySQL]!");
             //}
             m_strConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        }
+
+        /// <summary>
+        /// 设置OracleConnection连接字符串
+        /// </summary>
+        /// <param name="p_strDataSource">数据源</param>
+        /// <param name="p_strUserID">用户名</param>
+        /// <param name="p_strPassword">密码</param>
+        /// <returns>拼接完成的连接串</returns>
+        public static string SetConnectionString(string p_strDataSource, string p_strUserID, string p_strPassword)
+        {
+            string _connectionString = " Data Source=" + p_strDataSource + ";User ID=" + p_strUserID + ";Password=" + p_strPassword;
+            m_strConnectionString = _connectionString;
+            return m_strConnectionString;
         }
 
         /// <summary>
