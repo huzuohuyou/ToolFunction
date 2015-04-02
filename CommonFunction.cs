@@ -157,7 +157,7 @@ namespace ToolFunction
             }
         }
         /// <summary>
-        /// 记录错误信息
+        /// 向ErrorLog.txt记录错误信息 并记录错误发生日期
         /// </summary>
         /// <param name="mess">错误信息</param>
         public static void WriteErrorLog(string mess)
@@ -174,7 +174,7 @@ namespace ToolFunction
                 fs = new FileStream(filepath, FileMode.Append);
                 using (sw = new StreamWriter(fs))
                 {
-                    sw.WriteLine(DateTime.Now.ToString() + "-----------------------------\n");
+                    sw.WriteLine(DateTime.Now.ToString());
                     sw.WriteLine(mess);
                     sw.Flush();
                 }
@@ -248,7 +248,7 @@ namespace ToolFunction
                 //载入日志文件
                 doc.Load(Application.StartupPath + @"\" + Application.ProductName + "Log.xml");
                 //创建节点(一级)
-                XmlNode root = doc.SelectSingleNode("系统错误日志");
+                XmlNode root = doc.SelectSingleNode("系统日志");
                 //创建节点（二级）
                 XmlNode node = doc.CreateElement("Log");
                 //创建节点（三级）
