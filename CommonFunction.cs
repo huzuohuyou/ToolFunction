@@ -231,7 +231,7 @@ namespace ToolFunction
         {
             XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", "GB2312", null);
             doc.AppendChild(dec);
-            XmlNode root = doc.CreateElement("系统错误日志");
+            XmlNode root = doc.CreateElement("系统日志");
             doc.AppendChild(root);
             doc.Save(Application.StartupPath + @"\" + Application.ProductName + "Log.xml");
         }
@@ -267,7 +267,7 @@ namespace ToolFunction
                 root.AppendChild(node);
                 doc.Save(Application.StartupPath + @"\" + Application.ProductName + "Log.xml");
             }
-            catch (Exception)
+            catch (Exception exp)
             {
                 throw;
             }
