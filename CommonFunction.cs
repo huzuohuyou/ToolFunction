@@ -844,10 +844,11 @@ namespace ToolFunction
         /// <returns>返回表</returns>
         static public DataTable OleExecuteBySQL(string p_strSql, SortedDictionary<string, string> p_dicDictionary, string p_strTablename)
         {
-            SetConnectionString();
+            //SetConnectionString();
             if ("" == m_strConnectionString)
             {
                 MessageBox.Show("未设置数据库连接字符串！");
+                return null;
             }
             DataTable _dtTable = new DataTable(p_strTablename);
             m_oleConn = new OleDbConnection(m_strConnectionString);
@@ -884,10 +885,11 @@ namespace ToolFunction
         /// <returns>返回表</returns>
         static public DataTable OdbcExecuteBySQL(string p_strSql, Dictionary<string, string> p_dicDictionary, string p_strTablename)
         {
-            SetConnectionString();
+            //SetConnectionString();
             if ("" == m_strConnectionString)
             {
                 MessageBox.Show("未设置数据库连接字符串！");
+                return null;
             }
             DataTable _dtTable = new DataTable(p_strTablename);
             m_odbcConn = new OdbcConnection(m_strConnectionString);
@@ -1174,7 +1176,12 @@ namespace ToolFunction
         /// <returns>返回结果</returns>
         static public int OleExecuteNonQuery(string p_strSql, SortedDictionary<string, string> p_dictParam)
         {
-            SetConnectionString();
+            //SetConnectionString();
+            if ("" == m_strConnectionString)
+            {
+                MessageBox.Show("未设置数据库连接字符串！");
+                return -1;
+            }
             int _iExeCount = 0;
             m_oleConn = new OleDbConnection(m_strConnectionString);
             m_oleCmd = m_oleConn.CreateCommand();
@@ -1206,7 +1213,7 @@ namespace ToolFunction
         /// <returns>返回结果</returns>
         static public int OdbcExecuteNonQuery(string p_strSql, Dictionary<string, string> p_dictParam)
         {
-            SetConnectionString();
+            //SetConnectionString();
             int _iExeCount = 0;
             m_odbcConn = new OdbcConnection(m_strConnectionString);
             m_odbcCmd = m_odbcConn.CreateCommand();
@@ -1296,7 +1303,7 @@ namespace ToolFunction
         /// 通过APP.config文件获取连接数据库字符串
         /// </summary>
         /// <returns></returns>
-        public static void SetConnectionString()
+        public static void GetConnectionString()
         {
             //string _strDBType = ConfigurationManager.AppSettings["DBType"];
             //if ("Oracle" == _strDBType)
@@ -1316,6 +1323,25 @@ namespace ToolFunction
             //    MessageBox.Show("未设置[DBType]或数据库类型不是[Oracle][SQLServer][MySQL]!");
             //}
             m_strConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        }
+
+        /// <summary>
+        /// 由dbtype获取相应的数据库连接子付出啊
+        /// 2015-04-13 吴海龙
+        /// </summary>
+        /// <param name="p_strDbtype">数据库类型</param>
+        /// <returns></returns>
+        public static string GetConnectionString(string p_strDbtype)
+        {
+            try
+            {
+                m_strConnectionString = ConfigurationManager.ConnectionStrings[p_strDbtype].ConnectionString;
+            }
+            catch (Exception exp)
+            {
+                WriteLog(exp,"没有此DBType！");
+            }
+            return m_strConnectionString;
         }
 
         /// <summary>
