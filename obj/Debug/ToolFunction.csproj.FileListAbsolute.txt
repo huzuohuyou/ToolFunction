@@ -118,8 +118,7 @@ E:\Github\ToolFunction\obj\Debug\ToolFunction.uctlIcon2.resources
 E:\Github\ToolFunction\obj\Debug\ToolFunction.uctlMessageBox.resources
 E:\Github\ToolFunction\obj\Debug\ToolFunction.uctlPleaseWaiting.resources
 E:\Github\ToolFunction\obj\Debug\ToolFunction.Properties.Resources.resources
+E:\Github\ToolFunction\obj\Debug\ToolFunction.uctlTimeAxis.resources
 E:\Github\ToolFunction\obj\Debug\ToolFunction.csproj.GenerateResource.Cache
 E:\Github\ToolFunction\obj\Debug\ToolFunction.dll
 E:\Github\ToolFunction\obj\Debug\ToolFunction.pdb
-E:\Github\ToolFunction\obj\Debug\ToolFunction.csprojResolveAssemblyReference.cache
-E:\Github\ToolFunction\obj\Debug\ToolFunction.uctlTimeAxis.resources
