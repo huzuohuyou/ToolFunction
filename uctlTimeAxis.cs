@@ -28,9 +28,9 @@ namespace ToolFunction
         /// 微软雅黑
         /// </summary>
         static Font f1 = new Font("微软雅黑", 9, FontStyle.Regular);
-        /// <summary>
-        /// 横坐标
-        /// </summary>
+
+        //public static Graphics g = null;
+
 
         public static SortedDictionary<string, string> sdict = new SortedDictionary<string, string>();
         public uctlTimeAxis()
@@ -106,13 +106,13 @@ namespace ToolFunction
         /// <summary>
         /// 由外部graphics初始化时间轴.
         /// </summary>
-        /// <param name="gg"></param>
-        public static void InitTimeAxis(Graphics gg)
+        /// <param name="graphics"></param>
+        public static void InitTimeAxis(Graphics graphics)
         {
             try
             {
                 int x = 20;
-                using (Graphics g = gg)
+                using (Graphics g = graphics)
                 {
                     g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -180,7 +180,39 @@ namespace ToolFunction
                     }
                     x = x + 80;
                 }
-               
+
+            }
+        }
+
+
+        /// <summary>
+        /// 执行step
+        /// 2015-04-15
+        /// 吴海龙
+        /// </summary>
+        /// <param name="key"></param>
+        public static void SetStep(Graphics graphics, string key)
+        {
+            int x = 20;
+            using (Graphics g = graphics)
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                foreach (var item in sdict.Keys)
+                {
+                    g.DrawLine(p2, new Point(10, 35), new Point(x + 20, 35));
+                    g.DrawString(sdict[item], f1, Brushes.Green, new PointF(x, 45));
+                    g.FillEllipse(Brushes.White, x + 20, 25, 18, 18);
+                    g.DrawEllipse(p3, x + 20, 25, 18, 18);
+                    g.FillEllipse(Brushes.Green, x + 23, 28, 12, 12);
+                    if (item == key)
+                    {
+                        break;
+                    }
+                    x = x + 80;
+                }
+
             }
         }
 
@@ -213,6 +245,11 @@ namespace ToolFunction
         private void button2_Click_1(object sender, EventArgs e)
         {
             this.FindForm().Close();
+        }
+
+        private void uctlTimeAxis_Paint(object sender, PaintEventArgs e)
+        {
+            InitTimeAxis();
         }
     }
 }

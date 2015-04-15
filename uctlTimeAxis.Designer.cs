@@ -60,6 +60,7 @@
             this.Controls.Add(this.button1);
             this.Name = "uctlTimeAxis";
             this.Size = new System.Drawing.Size(583, 124);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.uctlTimeAxis_Paint);
             this.ResumeLayout(false);
 
         }
