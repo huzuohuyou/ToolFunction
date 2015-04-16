@@ -43,3 +43,5 @@ Temporary Items
 .apdisk
 *.dll
 obj/Debug/ToolFunction.csproj.GenerateResource.Cache
+bin/Debug/DevExpress.Data.v7.2.xml
+bin/Debug/DevExpress.Utils.v7.2.xml

@@ -7,11 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.Threading;
 
 namespace ToolFunction
 {
+    
     public partial class uctlTimeAxis : UserControl
     {
+      
+
         /// <summary>
         /// 蓝色宽2
         /// </summary>
@@ -30,39 +34,28 @@ namespace ToolFunction
         static Font f1 = new Font("微软雅黑", 9, FontStyle.Regular);
 
         //public static Graphics g = null;
-
-
+        //public static string Key = "";
         public static SortedDictionary<string, string> sdict = new SortedDictionary<string, string>();
         public uctlTimeAxis()
         {
             InitializeComponent();
-            sdict.Add("1", "读取配置");
-            sdict.Add("2", "选择模板");
-            sdict.Add("3", "确认数据");
-            sdict.Add("4", "生成代码");
-            if (sdict != null)
-            {
-                this.Width = (sdict.Keys.Count + 2) * 80;
-                InitTimeAxis();
-            }
+        }
+
+        public void SetKeyValue(object sender, KeyValueEventArgs e)
+        {
+
         }
 
         public uctlTimeAxis(SortedDictionary<string, string> s)
         {
             InitializeComponent();
-            sdict.Add("1", "读取配置");
-            sdict.Add("2", "选择模板");
-            sdict.Add("3", "确认数据");
-            sdict.Add("4", "生成代码");
             if (sdict != null)
             {
                 this.Width = (sdict.Keys.Count + 2) * 80;
                 sdict = s;
-                InitTimeAxis();
-                this.Refresh();
             }
-           
         }
+
 
         /// <summary>
         /// 初始化时间轴
@@ -89,10 +82,6 @@ namespace ToolFunction
                         g.FillEllipse(Brushes.Gray, x + 20, 25, 18, 18);
                         g.FillEllipse(Brushes.White, x + 21, 26, 16, 16);
                         g.DrawString(sdict[item], f1, Brushes.DarkGray, new PointF(x, 45));
-                        //Label l = new Label();
-                        //this.Controls.Add(l);
-                        //l.Location = new Point(x, 50);
-                        //l.Text = sdict[item];
                         x = x + 80;
                     }
                 }
@@ -127,10 +116,6 @@ namespace ToolFunction
                         g.FillEllipse(Brushes.Gray, x + 20, 25, 18, 18);
                         g.FillEllipse(Brushes.White, x + 21, 26, 16, 16);
                         g.DrawString(sdict[item], f1, Brushes.DarkGray, new PointF(x, 45));
-                        //Label l = new Label();
-                        //this.Controls.Add(l);
-                        //l.Location = new Point(x, 50);
-                        //l.Text = sdict[item];
                         x = x + 80;
                     }
                 }
@@ -152,6 +137,42 @@ namespace ToolFunction
         {
             sdict = d;
         }
+
+        /// <summary>
+        /// 执行step
+        /// 2015-04-16
+        /// 吴海龙
+        /// </summary>
+        /// <param name="key"></param>
+        public void SetStep()
+        {
+            if ("" == KeyValueEventArgs.Key)
+            {
+                return;
+            }
+            int x = 20;
+            using (Graphics g = this.CreateGraphics())
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                foreach (var item in sdict.Keys)
+                {
+                    g.DrawLine(p2, new Point(10, 35), new Point(x + 20, 35));
+                    g.DrawString(sdict[item], f1, Brushes.Green, new PointF(x, 45));
+                    g.FillEllipse(Brushes.White, x + 20, 25, 18, 18);
+                    g.DrawEllipse(p3, x + 20, 25, 18, 18);
+                    g.FillEllipse(Brushes.Green, x + 23, 28, 12, 12);
+                    if (item == KeyValueEventArgs.Key)
+                    {
+                        break;
+                    }
+                    x = x + 80;
+                }
+            }
+           
+        }
+
 
         /// <summary>
         /// 执行step
@@ -216,40 +237,86 @@ namespace ToolFunction
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 执行step
+        /// 2015-04-15
+        /// 吴海龙
+        /// </summary>
+        /// <param name="key"></param>
+        public static void SetStep(Control control, string key)
+        {
+            int x = 20;
+            using (Graphics g = control.CreateGraphics())
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                foreach (var item in sdict.Keys)
+                {
+                    g.DrawLine(p2, new Point(10, 35), new Point(x + 20, 35));
+                    g.DrawString(sdict[item], f1, Brushes.Green, new PointF(x, 45));
+                    g.FillEllipse(Brushes.White, x + 20, 25, 18, 18);
+                    g.DrawEllipse(p3, x + 20, 25, 18, 18);
+                    g.FillEllipse(Brushes.Green, x + 23, 28, 12, 12);
+                    if (item == key)
+                    {
+                        break;
+                    }
+                    x = x + 80;
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// 步进方法
+        /// /// 2015-04-16
+        /// 吴海龙
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void SetStep(object sender, KeyValueEventArgs e)
+        {
+            SetStep();
+        }
+
+        /// <summary>
+        /// 初始化事件
+        /// 2015-04-16
+        /// 吴海龙
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void InitTimeAxis(object sender, KeyValueEventArgs e)
         {
             InitTimeAxis();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            this.FindForm().Close();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            InitTimeAxis();
-        }
-
-        private void button2_Click_1(object sender, EventArgs e)
-        {
-            this.FindForm().Close();
         }
 
         private void uctlTimeAxis_Paint(object sender, PaintEventArgs e)
         {
             InitTimeAxis();
+            SetStep();
+            
         }
+
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    InitTimeAxis();
+        //    SetStep();
+        //}
+
+        /// <summary>
+        /// 相当于杂志的角色
+        /// </summary>
+        public class KeyValueEventArgs : EventArgs
+        {
+            public static string Key = "";
+            public KeyValueEventArgs(string s)
+            {
+                Key = s;
+            }
+        }
+
+
     }
 }
