@@ -11,17 +11,20 @@ using System.Threading;
 
 namespace ToolFunction
 {
-    
+    /// <summary>
+    /// 相当于杂志社的角色
+    /// </summary>
     public partial class uctlTimeAxis : UserControl
     {
-      
+        #region 图像配置区域
+
 
         /// <summary>
         /// 蓝色宽2
         /// </summary>
         static Pen p1 = new Pen(Color.Blue, 2);
         /// <summary>
-        /// 绿色宽2
+        /// 绿色宽3
         /// </summary>
         static Pen p2 = new Pen(Color.Green, 3);
         /// <summary>
@@ -33,17 +36,41 @@ namespace ToolFunction
         /// </summary>
         static Font f1 = new Font("微软雅黑", 9, FontStyle.Regular);
 
-        //public static Graphics g = null;
-        //public static string Key = "";
+        public static int CenterOfTheCircleX = 31;
+        public static int CenterOfTheCircleY = 46;
+        public static int ItemStartX = 45;
+        public static int ItemFixX = -20;
+        public static int ItemFixY = 10;
+        public static Point CenterOfThePie = new Point(CenterOfTheCircleX, CenterOfTheCircleY);
+        public static int PieRadius = 6;
+        public static int PieRadius2 = 8;
+        public static int CircleRadius = 9;
+        public static int CircleSpace = 80;
+        public static int LineStartX = CenterOfTheCircleX;
+        public static int LineStartY = CenterOfTheCircleY;
+
+        public static string Key = "";
+        public event EventHandler<KeyValueEventArgs> KeyValueChangeEventHandler;
         public static SortedDictionary<string, string> sdict = new SortedDictionary<string, string>();
+        /// <summary>
+        /// 水平标示
+        /// </summary>
+        private static readonly int HorizontalTimeAxis = 0;
+        /// <summary>
+        /// 垂直标志
+        /// </summary>
+        private static readonly int VerticalTimeAxis = 1;
+
+        /// <summary>
+        /// 绘制标志，0为水平；1为垂直。
+        /// </summary>
+        public static int TimeAxisModle = 0;
+       
+        #endregion
+
         public uctlTimeAxis()
         {
             InitializeComponent();
-        }
-
-        public void SetKeyValue(object sender, KeyValueEventArgs e)
-        {
-
         }
 
         public uctlTimeAxis(SortedDictionary<string, string> s)
@@ -51,38 +78,64 @@ namespace ToolFunction
             InitializeComponent();
             if (sdict != null)
             {
-                this.Width = (sdict.Keys.Count + 2) * 80;
                 sdict = s;
             }
         }
 
+        public uctlTimeAxis(SortedDictionary<string, string> s, int model)
+        {
+            InitializeComponent();
+            if (sdict != null)
+            {
+                sdict = s;
+                TimeAxisModle = model;
+                if (HorizontalTimeAxis==TimeAxisModle)
+                {
+                    KeyValueChangeEventHandler += new EventHandler<KeyValueEventArgs>(SetHorizontalStep);
+                }
+                else if (VerticalTimeAxis==TimeAxisModle)
+                {
+                     KeyValueChangeEventHandler += new EventHandler<KeyValueEventArgs>(SetVerticalStep);
+                }
+            }
+        }
+
+        public void SetKeyValue(string s)
+        {
+            if (uctlTimeAxis.sdict.Keys.Contains(s))
+            {
+                EventHandler<KeyValueEventArgs> l = KeyValueChangeEventHandler;
+                if (l != null)
+                {
+                    l(this, new KeyValueEventArgs(s));
+                }
+            }
+           
+        }
 
         /// <summary>
-        /// 初始化时间轴
+        /// 初始化水平进图轴
         /// 2015-04-15
         /// 吴海龙
         /// </summary>
-        public void InitTimeAxis()
+        public void InitHorizontalTimeAxis()
         {
             try
             {
-                int x = 20;
+                int TempCenterOfTheCircleX = CenterOfTheCircleX;
                 using (Graphics g = this.CreateGraphics())
                 {
                     g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     g.CompositingQuality = CompositingQuality.HighQuality;
-                    Point topLeft = new Point(5, 5);
-                    Size howBig = new Size(sdict.Keys.Count * 80, 5);
-                    Rectangle rectangleArea = new Rectangle(topLeft, howBig);
-                    g.DrawString("正在执行:", f1, Brushes.Black, new PointF(x, 5));
-                    g.DrawLine(p3, new Point(x, 35), new Point(sdict.Keys.Count * 80, 35));
+                    g.DrawString("正在执行:", f1, Brushes.Black, new PointF(CenterOfTheCircleX, 5));
+                    g.DrawLine(p3, new Point(TempCenterOfTheCircleX, CenterOfTheCircleY), new Point((sdict.Keys.Count - 1) * CircleSpace + CenterOfTheCircleX, CenterOfTheCircleY));
                     foreach (var item in sdict.Keys)
                     {
-                        g.FillEllipse(Brushes.Gray, x + 20, 25, 18, 18);
-                        g.FillEllipse(Brushes.White, x + 21, 26, 16, 16);
-                        g.DrawString(sdict[item], f1, Brushes.DarkGray, new PointF(x, 45));
-                        x = x + 80;
+                        g.FillEllipse(Brushes.Gray, TempCenterOfTheCircleX - CircleRadius, CenterOfTheCircleY - CircleRadius, CircleRadius * 2, CircleRadius * 2);
+                        g.FillEllipse(Brushes.White, TempCenterOfTheCircleX - PieRadius2, CenterOfTheCircleY - PieRadius2, PieRadius2 * 2, PieRadius2 * 2);
+                        g.DrawString(sdict[item], f1, Brushes.DarkGray, new PointF(TempCenterOfTheCircleX + ItemFixX, CenterOfTheCircleY + ItemFixY));
+                        TempCenterOfTheCircleX = TempCenterOfTheCircleX + CircleSpace;
                     }
                 }
             }
@@ -90,6 +143,64 @@ namespace ToolFunction
             {
                 CommonFunction.WriteLog(exp, "绘制失败");
             }
+        }
+
+        /// <summary>
+        /// 初始化垂直进度轴
+        /// 2015-04-15
+        /// 吴海龙
+        /// </summary>
+        public void InitVerticalTimeAxis()
+        {
+            try
+            {
+                int TempCenterOfThePieY = CenterOfTheCircleY;
+                using (Graphics g = this.CreateGraphics())
+                {
+                    g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.CompositingQuality = CompositingQuality.HighQuality;
+                    g.DrawString("正在执行:", f1, Brushes.Black, new PointF(CenterOfTheCircleX, 5));
+                    g.DrawLine(p3, new Point(LineStartX, TempCenterOfThePieY), new Point(LineStartX, (sdict.Keys.Count - 1) * CircleSpace + TempCenterOfThePieY));
+                    foreach (var item in sdict.Keys)
+                    {
+                        g.FillEllipse(Brushes.Gray, CenterOfTheCircleX - CircleRadius, TempCenterOfThePieY - CircleRadius, CircleRadius * 2, CircleRadius * 2);
+                        g.FillEllipse(Brushes.White, CenterOfTheCircleX - PieRadius2, TempCenterOfThePieY - PieRadius2, PieRadius2 * 2, PieRadius2 * 2);
+                        g.DrawString(sdict[item], f1, Brushes.DarkGray, new PointF(ItemStartX, TempCenterOfThePieY - ItemFixY));
+                        TempCenterOfThePieY = TempCenterOfThePieY + CircleSpace;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                CommonFunction.WriteLog(exp, "绘制失败");
+            }
+            //-------------
+
+            //try
+            //{
+            //    int x = 20;
+            //    int y = 20;
+            //    using (Graphics g = this.CreateGraphics())
+            //    {
+            //        g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
+            //        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            //        g.CompositingQuality = CompositingQuality.HighQuality;
+            //        g.DrawString("正在执行:", f1, Brushes.Black, new PointF(x, 5));
+            //        g.DrawLine(p3, new Point(35, y), new Point(35, sdict.Keys.Count * 80));
+            //        foreach (var item in sdict.Keys)
+            //        {
+            //            g.FillEllipse(Brushes.Gray, 25, y + 20, 18, 18);
+            //            g.FillEllipse(Brushes.White, 26, y + 21, 16, 16);
+            //            g.DrawString(sdict[item], f1, Brushes.DarkGray, new PointF(45, y+20));
+            //            y = y + 80;
+            //        }
+            //    }
+            //}
+            //catch (Exception exp)
+            //{
+            //    CommonFunction.WriteLog(exp, "绘制失败");
+            //}
         }
 
         /// <summary>
@@ -139,14 +250,14 @@ namespace ToolFunction
         }
 
         /// <summary>
-        /// 执行step
+        /// 执行水平step
         /// 2015-04-16
         /// 吴海龙
         /// </summary>
         /// <param name="key"></param>
-        public void SetStep()
+        public void SetHorizontalStep()
         {
-            if ("" == KeyValueEventArgs.Key)
+            if ("" == Key)
             {
                 return;
             }
@@ -163,14 +274,50 @@ namespace ToolFunction
                     g.FillEllipse(Brushes.White, x + 20, 25, 18, 18);
                     g.DrawEllipse(p3, x + 20, 25, 18, 18);
                     g.FillEllipse(Brushes.Green, x + 23, 28, 12, 12);
-                    if (item == KeyValueEventArgs.Key)
+                    if (item == Key)
                     {
                         break;
                     }
                     x = x + 80;
                 }
             }
-           
+
+        }
+
+
+        /// <summary>
+        /// 执行垂直step
+        /// 2015-04-16
+        /// 吴海龙
+        /// </summary>
+        /// <param name="key"></param>
+        public void SetVerticalStep()
+        {
+            if ("" == Key)
+            {
+                return;
+            }
+            int x = 20;
+            int y = 20;
+            using (Graphics g = this.CreateGraphics())
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                foreach (var item in sdict.Keys)
+                {
+                    g.DrawString(sdict[item], f1, Brushes.Green, new PointF(45, y + 20));
+                    g.FillEllipse(Brushes.White, 25, y + 20, 18, 18);
+                    g.DrawEllipse(p3, 25, y + 20, 18, 18);
+                    g.DrawLine(p2, new Point(34, 20), new Point(34, y + 25));
+                    g.FillEllipse(Brushes.Green, 28, y + 23, 12, 12);
+                    if (item == Key)
+                    {
+                        break;
+                    }
+                    y = y + 80;
+                }
+            }
         }
 
 
@@ -180,9 +327,14 @@ namespace ToolFunction
         /// 吴海龙
         /// </summary>
         /// <param name="key"></param>
-        public void SetStep(string key)
+        public void SetVerticalStep(string key)
         {
+            if ("" == KeyValueEventArgs.Key)
+            {
+                return;
+            }
             int x = 20;
+            int y = 20;
             using (Graphics g = this.CreateGraphics())
             {
                 g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
@@ -190,18 +342,17 @@ namespace ToolFunction
                 g.CompositingQuality = CompositingQuality.HighQuality;
                 foreach (var item in sdict.Keys)
                 {
-                    g.DrawLine(p2, new Point(10, 35), new Point(x + 20, 35));
-                    g.DrawString(sdict[item], f1, Brushes.Green, new PointF(x, 45));
-                    g.FillEllipse(Brushes.White, x + 20, 25, 18, 18);
-                    g.DrawEllipse(p3, x + 20, 25, 18, 18);
-                    g.FillEllipse(Brushes.Green, x + 23, 28, 12, 12);
-                    if (item == key)
+                    g.DrawString(sdict[item], f1, Brushes.Green, new PointF(45, y + 20));
+                    g.FillEllipse(Brushes.White, 25, y + 20, 18, 18);
+                    g.DrawEllipse(p3, 25, y + 20, 18, 18);
+                    g.DrawLine(p2, new Point(34, 20), new Point(34, y + 25));
+                    g.FillEllipse(Brushes.Green, 28, y + 23, 12, 12);
+                    if (item == KeyValueEventArgs.Key)
                     {
                         break;
                     }
-                    x = x + 80;
+                    y = y + 80;
                 }
-
             }
         }
 
@@ -269,15 +420,99 @@ namespace ToolFunction
         }
 
         /// <summary>
-        /// 步进方法
+        /// 垂直步进方法
         /// /// 2015-04-16
         /// 吴海龙
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void SetStep(object sender, KeyValueEventArgs e)
+        public void SetVerticalStep(object sender, KeyValueEventArgs e)
         {
-            SetStep();
+            int TempCenterOfThePieY = CenterOfTheCircleY;
+            if ("" == KeyValueEventArgs.Key)
+            {
+                return;
+            }
+            using (Graphics g = this.CreateGraphics())
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                foreach (var item in sdict.Keys)
+                {
+                    g.DrawString(sdict[item], f1, Brushes.Green, ItemStartX, TempCenterOfThePieY - ItemFixY);
+                    g.DrawEllipse(Pens.Green, CenterOfTheCircleX - CircleRadius, TempCenterOfThePieY - CircleRadius, CircleRadius * 2, CircleRadius * 2);
+                    g.DrawLine(p2, new Point(LineStartX, LineStartY), new Point(LineStartX, TempCenterOfThePieY));
+                    g.FillEllipse(Brushes.Green, CenterOfTheCircleX - PieRadius, TempCenterOfThePieY - PieRadius, PieRadius * 2, PieRadius * 2);
+                    if (item == KeyValueEventArgs.Key)
+                    {
+                        break;
+                    }
+                    TempCenterOfThePieY = TempCenterOfThePieY + CircleSpace;
+                }
+            }
+            //----------------------------------
+            //if ("" == KeyValueEventArgs.Key)
+            //{
+            //    return;
+            //}
+            //int x = 20;
+            //int y = 20;
+            //using (Graphics g = this.CreateGraphics())
+            //{
+            //    g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
+            //    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            //    g.CompositingQuality = CompositingQuality.HighQuality;
+            //    foreach (var item in sdict.Keys)
+            //    {
+            //        g.DrawString(sdict[item], f1, Brushes.Green, new PointF(45, y + 20));
+            //        g.DrawEllipse(Pens.Green, 25, y + 20, 18, 18);
+            //        g.DrawLine(p2, new Point(34, 20), new Point(34, y + 25));
+            //        g.FillEllipse(Brushes.Green, 28, y + 23, 12, 12);
+            //        if (item == KeyValueEventArgs.Key)
+            //        {
+            //            break;
+            //        }
+            //        y = y + 80;
+            //    }
+            //}
+        }
+
+
+        /// <summary>
+        /// 水平步进方法
+        /// /// 2015-04-16
+        /// 吴海龙
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void SetHorizontalStep(object sender, KeyValueEventArgs e)
+        {
+            if ("" == KeyValueEventArgs.Key)
+            {
+                return;
+            }
+
+            int TempCenterOfTheCircleX = CenterOfTheCircleX;
+            using (Graphics g = this.CreateGraphics())
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;  //使绘图质量最高，即消除锯齿
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                foreach (var item in sdict.Keys)
+                {
+                    g.DrawLine(p2, new Point(CenterOfTheCircleX, CenterOfTheCircleY), new Point(TempCenterOfTheCircleX, CenterOfTheCircleY));
+                    g.DrawString(sdict[item], f1, Brushes.Green, new PointF(TempCenterOfTheCircleX + ItemFixX, CenterOfTheCircleY + ItemFixY));
+                    //g.FillEllipse(Brushes.White, TempCenterOfTheCircleX, CenterOfTheCircleY, CircleRadius * 2, CircleRadius * 2);
+                    g.DrawEllipse(p3, TempCenterOfTheCircleX - CircleRadius, CenterOfTheCircleY - CircleRadius, CircleRadius * 2, CircleRadius * 2);
+                    g.FillEllipse(Brushes.Green, TempCenterOfTheCircleX - PieRadius, CenterOfTheCircleY - PieRadius, PieRadius * 2, PieRadius * 2);
+                    if (item == KeyValueEventArgs.Key)
+                    {
+                        break;
+                    }
+                    TempCenterOfTheCircleX = TempCenterOfTheCircleX + CircleSpace;
+                }
+            }
         }
 
         /// <summary>
@@ -289,14 +524,22 @@ namespace ToolFunction
         /// <param name="e"></param>
         public void InitTimeAxis(object sender, KeyValueEventArgs e)
         {
-            InitTimeAxis();
+            InitHorizontalTimeAxis();
         }
 
         private void uctlTimeAxis_Paint(object sender, PaintEventArgs e)
         {
-            InitTimeAxis();
-            SetStep();
-            
+            if (TimeAxisModle == HorizontalTimeAxis)
+            {
+                InitHorizontalTimeAxis();
+                //MessageBox.Show(TimeAxisModle.ToString() + "横向");
+            }
+            else if (TimeAxisModle == VerticalTimeAxis)
+            {
+                InitVerticalTimeAxis();
+                //MessageBox.Show(TimeAxisModle.ToString() + "垂直");
+            }
+
         }
 
         //private void button1_Click(object sender, EventArgs e)

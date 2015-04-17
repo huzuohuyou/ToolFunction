@@ -36,7 +36,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Snow;
             this.Name = "uctlTimeAxis";
-            this.Size = new System.Drawing.Size(583, 124);
+            this.Size = new System.Drawing.Size(268, 124);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.uctlTimeAxis_Paint);
             this.ResumeLayout(false);
 
