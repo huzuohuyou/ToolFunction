@@ -16,7 +16,7 @@ namespace ToolFunction
     /// </summary>
     public partial class uctlTimeAxis : UserControl
     {
-        #region 图像配置区域
+        #region 图像配置
 
 
         /// <summary>
@@ -35,22 +35,62 @@ namespace ToolFunction
         /// 微软雅黑
         /// </summary>
         static Font f1 = new Font("微软雅黑", 9, FontStyle.Regular);
-
+        /// <summary>
+        /// 圆心X坐标
+        /// </summary>
         public static int CenterOfTheCircleX = 31;
+        /// <summary>
+        /// 圆心Y坐标
+        /// </summary>
         public static int CenterOfTheCircleY = 46;
+        /// <summary>
+        /// 说明条目X坐标
+        /// </summary>
         public static int ItemStartX = 45;
+        /// <summary>
+        /// 条目X修正量
+        /// </summary>
         public static int ItemFixX = -20;
+        /// <summary>
+        /// 条目Y修正量
+        /// </summary>
         public static int ItemFixY = 10;
         public static Point CenterOfThePie = new Point(CenterOfTheCircleX, CenterOfTheCircleY);
+        /// <summary>
+        /// 命中Pie半径
+        /// </summary>
         public static int PieRadius = 6;
+        /// <summary>
+        /// 白点Pie半径
+        /// </summary>
         public static int PieRadius2 = 8;
+        /// <summary>
+        /// 圆半径
+        /// </summary>
         public static int CircleRadius = 9;
+        /// <summary>
+        /// 圆心距
+        /// </summary>
         public static int CircleSpace = 80;
+        /// <summary>
+        /// 轴X起点
+        /// </summary>
         public static int LineStartX = CenterOfTheCircleX;
+        /// <summary>
+        /// 轴Y起点
+        /// </summary>
         public static int LineStartY = CenterOfTheCircleY;
-
+        /// <summary>
+        /// 内部Key定义
+        /// </summary>
         public static string Key = "";
+        /// <summary>
+        /// 绘图事件
+        /// </summary>
         public event EventHandler<KeyValueEventArgs> KeyValueChangeEventHandler;
+        /// <summary>
+        /// 流程字典
+        /// </summary>
         public static SortedDictionary<string, string> sdict = new SortedDictionary<string, string>();
         /// <summary>
         /// 水平标示
