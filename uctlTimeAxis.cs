@@ -1,4 +1,19 @@
-﻿using System;
+﻿/*-----------------------Copyright (C) 2015 吴海龙--------------------
+            // 版权所有。 
+            //
+            // 文件名：uctlTimeAxis
+            // 文件功能描述：流程轴
+            //
+            // 
+            // 创建标识：吴海龙 2015-04-20
+            //
+            // 修改标识：
+            // 修改描述：
+            //
+            // 修改标识：
+            // 修改描述：
+//----------------------------------------------------------------*/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -11,6 +26,7 @@ using System.Threading;
 
 namespace ToolFunction
 {
+   
     /// <summary>
     /// 相当于杂志社的角色
     /// </summary>
@@ -88,6 +104,18 @@ namespace ToolFunction
         /// 绘图事件
         /// </summary>
         public event EventHandler<KeyValueEventArgs> KeyValueChangeEventHandler;
+
+        public delegate void LabelClickEventHandler(object sender, LabelClickEventArgs e);
+
+        //public event LabelClickEventHandler<LabelClickEventArgs> ;
+
+        public delegate void TimeAxisClick();
+
+        public TimeAxisClick lc = null;
+
+        public delegate void TimeAxisClick2(string labelName);
+
+        public TimeAxisClick2 lc2 = null;
         /// <summary>
         /// 流程字典
         /// </summary>
@@ -108,6 +136,7 @@ namespace ToolFunction
        
         #endregion
 
+        #region 构造方法
         public uctlTimeAxis()
         {
             InitializeComponent();
@@ -139,6 +168,12 @@ namespace ToolFunction
                 }
             }
         }
+
+        void uctlTimeAxis_LabelClickEventHandler(object sender, uctlTimeAxis.LabelClickEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
 
         public void SetKeyValue(string s)
         {
@@ -207,6 +242,14 @@ namespace ToolFunction
                         g.FillEllipse(Brushes.Gray, CenterOfTheCircleX - CircleRadius, TempCenterOfThePieY - CircleRadius, CircleRadius * 2, CircleRadius * 2);
                         g.FillEllipse(Brushes.White, CenterOfTheCircleX - PieRadius2, TempCenterOfThePieY - PieRadius2, PieRadius2 * 2, PieRadius2 * 2);
                         g.DrawString(sdict[item], f1, Brushes.DarkGray, new PointF(ItemStartX, TempCenterOfThePieY - ItemFixY));
+                        Label l = new Label();
+                        l.Name = item;
+                        l.Location = new Point(ItemStartX,TempCenterOfThePieY - ItemFixY);
+                        l.Text = sdict[item];
+                        l.Click +=new EventHandler(l_Click);
+
+                        //l.Click += new EventHandler(l_Click2);
+                        this.Controls.Add(l);
                         TempCenterOfThePieY = TempCenterOfThePieY + CircleSpace;
                     }
                 }
@@ -242,6 +285,22 @@ namespace ToolFunction
             //    CommonFunction.WriteLog(exp, "绘制失败");
             //}
         }
+
+        void l_MouseHover(object sender, EventArgs e)
+        {
+        }
+
+        void l_Click(object sender, EventArgs e)
+        {
+            lc();
+        }
+
+        void l_Click2(object sender, LabelClickEventArgs e)
+        {
+            lc2(e.labelName);
+        }
+
+      
 
         /// <summary>
         /// 由外部graphics初始化时间轴.
@@ -594,9 +653,23 @@ namespace ToolFunction
         public class KeyValueEventArgs : EventArgs
         {
             public static string Key = "";
+
             public KeyValueEventArgs(string s)
             {
                 Key = s;
+            }
+        }
+
+        /// <summary>
+        /// 进度轴的外接事件
+        /// </summary>
+        public class LabelClickEventArgs : EventArgs
+        {
+            public string labelName = "";
+
+            public LabelClickEventArgs(string name)
+            {
+                labelName = name;
             }
         }
 
