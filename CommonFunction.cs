@@ -253,7 +253,7 @@ namespace ToolFunction
                 XmlNode node = doc.CreateElement("Log");
                 //创建节点（三级）
                 XmlElement element1 = doc.CreateElement("Time");
-                element1.InnerText = DateTime.Now.ToString("yyyy-MM-dd");
+                element1.InnerText = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 node.AppendChild(element1);
                 XmlElement element2 = doc.CreateElement("User");
                 element2.InnerText = "User";
