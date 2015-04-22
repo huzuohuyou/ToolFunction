@@ -205,6 +205,7 @@ namespace ToolFunction
         {
             WriteLog(new Exception(), mess);
         }
+
         /// <summary>
         /// 写日志信息
         /// </summary>
@@ -223,6 +224,8 @@ namespace ToolFunction
             }
             AppendLogMessage(doc, p_expEx, p_strMess);
         }
+
+
         /// <summary>
         /// 没有日志文件创建日志文件
         /// </summary>
@@ -235,6 +238,9 @@ namespace ToolFunction
             doc.AppendChild(root);
             doc.Save(Application.StartupPath + @"\" + Application.ProductName + "Log.xml");
         }
+
+
+
         /// <summary>
         /// 成功载入Log文件并添加节点日志信息
         /// </summary>
@@ -272,6 +278,8 @@ namespace ToolFunction
                 throw;
             }
         }
+
+
         #endregion
 
         #region 窗体域usercontrol的绑定
