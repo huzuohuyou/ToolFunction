@@ -1718,5 +1718,70 @@ namespace ToolFunction
         }
         #endregion
 
+        #region 文件操作
+        /// <summary>
+        /// 2015-06-15 吴海龙
+        /// 模板保存将保存为html格式的文本
+        /// </summary>
+        /// <param name="p_strFileContent">文件内容</param>
+        /// <param name="p_strFileName">文件名</param>
+        /// <returns>是否保存成功</returns>
+        public static bool SaveTemplet(string p_strFileContent, string p_strFileName)
+        {
+            try
+            {
+                if (File.Exists(p_strFileName))
+                {
+                    File.Delete(p_strFileName);
+                }
+                using (FileStream fs = new FileStream(p_strFileName, FileMode.Create))
+                {
+                    using (StreamWriter sw = new StreamWriter(fs))
+                    {
+                        sw.Write(p_strFileContent);
+                        sw.Flush();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 读取文件里的字符串
+        /// </summary>
+        /// <param name="p_strFileName">文件路径</param>
+        /// <returns></returns>
+        public static string OpenTemplet(string p_strFileName)
+        {
+            string result = "";
+            try
+            {
+                using (FileStream fs = new FileStream(p_strFileName, FileMode.Open))
+                {
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        string _strLine ;
+                        while ((_strLine=sr.ReadLine())!=null)
+                        {
+                            result += _strLine;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return "<b>文件打开失败<b>";
+                throw;
+            }
+            return result;
+        }
+
+        #endregion
+
     }
 }
