@@ -1722,12 +1722,25 @@ namespace ToolFunction
         #region 文件操作
         /// <summary>
         /// 2015-06-15 吴海龙
-        /// 模板保存将保存为html格式的文本
+        /// 模板保存将保存为html格式的文本并加密 
         /// </summary>
         /// <param name="p_strFileContent">文件内容</param>
         /// <param name="p_strFileName">文件名</param>
         /// <returns>是否保存成功</returns>
         public static bool SaveTemplet(string p_strFileContent, string p_strFileName)
+        {
+            return SaveTemplet(p_strFileContent, p_strFileName,true);
+        }
+
+        /// <summary>
+        /// 2015-06-15 吴海龙
+        /// 模板保存将保存为html格式的文本
+        /// </summary>
+        /// <param name="p_strFileContent">文件内容</param>
+        /// <param name="p_strFileName">文件名</param>
+        /// <param name="Encrypt">是否加密</param>
+        /// <returns>是否保存成功</returns>
+        public static bool SaveTemplet(string p_strFileContent, string p_strFileName, bool Encrypt)
         {
             try
             {
@@ -1737,11 +1750,17 @@ namespace ToolFunction
                 }
                 using (FileStream fs = new FileStream(p_strFileName, FileMode.Create))
                 {
-                    using (StreamWriter sw = new StreamWriter(fs))
+                    using (StreamWriter sw = new StreamWriter(fs,Encoding.UTF8))
                     {
-
-                        sw.Write(EncryptString(p_strFileContent));
-                        sw.Flush();
+                        if (Encrypt)
+                        {
+                            sw.Write(EncryptString(p_strFileContent));
+                        }
+                        else
+                        {
+                            sw.Write(p_strFileContent);
+                        }
+                       
                     }
                 }
             }
