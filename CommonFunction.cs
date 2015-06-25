@@ -18,6 +18,8 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.Odbc;
 using System.Security.Cryptography;
+using System.Net.Sockets;
+using System.Net;
 
 namespace ToolFunction
 {
@@ -116,7 +118,7 @@ namespace ToolFunction
         /// <param name="obj">类</param>
         /// <param name="p_strProperityName">属性名</param>
         /// <param name="p_strValue">属性值</param>
-        public static void SetProperitys(Object obj, string p_strProperityName,  string p_strValue)
+        public static void SetProperitys(Object obj, string p_strProperityName, string p_strValue)
         {
             try
             {
@@ -312,7 +314,7 @@ namespace ToolFunction
         /// </summary>
         /// <param name="f">容器窗体</param>
         /// <param name="uc">内容容器</param>
-        public static DialogResult ShowForm(UserControl uc,Color frmBackColor, Color ucBackColor, int oldborderwidth)
+        public static DialogResult ShowForm(UserControl uc, Color frmBackColor, Color ucBackColor, int oldborderwidth)
         {
             Form f = new Form();
             uc.Dock = DockStyle.None;
@@ -321,8 +323,8 @@ namespace ToolFunction
             f.FormBorderStyle = FormBorderStyle.None;
             f.StartPosition = FormStartPosition.CenterParent;
             uc.BackColor = ucBackColor;
-            uc.Left = oldborderwidth/2;
-            uc.Top = oldborderwidth/2;
+            uc.Left = oldborderwidth / 2;
+            uc.Top = oldborderwidth / 2;
             f.Controls.Add(uc);
             return f.ShowDialog();
         }
@@ -391,7 +393,7 @@ namespace ToolFunction
             //f.Size = new Size(339, 88);
             //f.FormBorderStyle = FormBorderStyle.None;
             uctlPleaseWaiting pw = new uctlPleaseWaiting();
-            ShowForm( pw);
+            ShowForm(pw);
         }
         /// <summary>
         /// 创建一个新的线程，并开启。
@@ -759,15 +761,15 @@ namespace ToolFunction
             //列的初始化
             foreach (string column in mc)
             {
-                
+
             }
             //生成行
             foreach (BsonDocument item in mc)
             {
-                
+
             }
             return dt;
-        
+
         }
 
         /// <summary>
@@ -776,7 +778,7 @@ namespace ToolFunction
         /// <param name="collenction">集合名称</param>
         /// <param name="qd">QueryCocument条件</param>
         /// <returns>返回结果</returns>
-        public static MongoCursor QueryMongoCollection(string collenction,QueryDocument  qd)
+        public static MongoCursor QueryMongoCollection(string collenction, QueryDocument qd)
         {
             MongoCursor<BsonDocument> result = null;
             var connectionString = "mongodb://localhost";
@@ -803,7 +805,7 @@ namespace ToolFunction
         /// </summary>
         /// <param name="collenction"></param>
         /// <param name="bd"></param>
-        public static void UpdateMongoCollection(string collenction,BsonDocument bd)
+        public static void UpdateMongoCollection(string collenction, BsonDocument bd)
         {
             var connectionString = "mongodb://localhost";
             var client = new MongoClient(connectionString);
@@ -812,7 +814,7 @@ namespace ToolFunction
             MongoCollection col = database.GetCollection(collenction);
             //update
             //col.Update(collenction, (x => x.ID == collenction.ID));
-           
+
         }
 
         /// <summary>
@@ -1054,7 +1056,7 @@ namespace ToolFunction
             {
                 CommonFunction.WriteErrorLog(ex.ToString());
             }
-           
+
         }
 
         /// <summary>
@@ -1064,7 +1066,7 @@ namespace ToolFunction
         {
             try
             {
-                if (m_oleConn!=null)
+                if (m_oleConn != null)
                 {
                     m_oleTrans.Commit();
                 }
@@ -1073,7 +1075,7 @@ namespace ToolFunction
             {
                 CommonFunction.WriteErrorLog(ex.ToString());
             }
-            
+
         }
 
         /// <summary>
@@ -1348,7 +1350,7 @@ namespace ToolFunction
             }
             catch (Exception exp)
             {
-                WriteLog(exp,"没有此DBType！");
+                WriteLog(exp, "没有此DBType！");
             }
             return m_strConnectionString;
         }
@@ -1420,7 +1422,7 @@ namespace ToolFunction
             p_oleCmd.Parameters.Clear();
             foreach (object obj in p_dictParam.Keys)
             {
-                string strParm =   obj.ToString();
+                string strParm = obj.ToString();
                 string values;
                 p_dictParam.TryGetValue(obj.ToString(), out values);
                 p_oleCmd.Parameters.Add(strParm, OleDbType.VarChar).Value = values;
@@ -1729,7 +1731,7 @@ namespace ToolFunction
         /// <returns>是否保存成功</returns>
         public static bool SaveTemplet(string p_strFileContent, string p_strFileName)
         {
-            return SaveTemplet(p_strFileContent, p_strFileName,true);
+            return SaveTemplet(p_strFileContent, p_strFileName, true);
         }
 
         /// <summary>
@@ -1750,7 +1752,7 @@ namespace ToolFunction
                 }
                 using (FileStream fs = new FileStream(p_strFileName, FileMode.Create))
                 {
-                    using (StreamWriter sw = new StreamWriter(fs,Encoding.UTF8))
+                    using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
                     {
                         if (Encrypt)
                         {
@@ -1760,7 +1762,7 @@ namespace ToolFunction
                         {
                             sw.Write(p_strFileContent);
                         }
-                       
+
                     }
                 }
             }
@@ -1787,8 +1789,8 @@ namespace ToolFunction
                 {
                     using (StreamReader sr = new StreamReader(fs))
                     {
-                        string _strLine ;
-                        while ((_strLine=sr.ReadLine())!=null)
+                        string _strLine;
+                        while ((_strLine = sr.ReadLine()) != null)
                         {
                             result += DecryptString(_strLine);
                         }
@@ -1797,7 +1799,7 @@ namespace ToolFunction
             }
             catch (Exception e)
             {
-                WriteLog(e,"打开文件失败");
+                WriteLog(e, "打开文件失败");
                 return "<b>文件打开失败<b>";
                 throw;
             }
@@ -1806,15 +1808,14 @@ namespace ToolFunction
 
         #endregion
 
-
         #region 字符串加密算法
-        
+
         #region "定义加密字串变量"
         private static SymmetricAlgorithm mCSP = new DESCryptoServiceProvider();  //定义访问数据加密标准 (DES) 算法的加密服务提供程序 (CSP) 版本的包装对象,此类是SymmetricAlgorithm的派生类
-        private static  string CIV = "ci9l/+7Zujhy12se6Yjy111A";  //初始化向量
-        private static  string CKEY = "jkHuIy8D/9i="; //密钥（常量）
+        private static string CIV = "ci9l/+7Zujhy12se6Yjy111A";  //初始化向量
+        private static string CKEY = "jkHuIy8D/9i="; //密钥（常量）
         #endregion
-        
+
         /// <summary>
         /// 加密字符串
         /// </summary>
@@ -1858,6 +1859,74 @@ namespace ToolFunction
             return Encoding.UTF8.GetString(ms.ToArray()); //将字节数组中的所有字符解码为一个字符串
         }
 
+        #endregion
+
+        #region FTP文件上传
+
+        static string ftpServerIP;
+        static string ftpRemotePath;
+        static string ftpUserID;
+        static string ftpPassword;
+        static string ftpURI;
+
+        /// <summary>
+        /// 连接FTP
+        /// </summary>
+        /// <param name="FtpServerIP">FTP连接地址</param>
+        /// <param name="FtpRemotePath">指定FTP连接成功后的当前目录, 如果不指定即默认为根目录</param>
+        /// <param name="FtpUserID">用户名</param>
+        /// <param name="FtpPassword">密码</param>
+        public static void SetFtpWeb(string FtpServerIP, string FtpRemotePath, string FtpUserID, string FtpPassword)
+        {
+            ftpServerIP = FtpServerIP;
+            ftpRemotePath = FtpRemotePath;
+            ftpUserID = FtpUserID;
+            ftpPassword = FtpPassword;
+            ftpURI = "ftp://" + ftpServerIP + "/" + ftpRemotePath + "/";
+        }
+
+        /// <summary>
+        /// 上传
+        /// </summary>
+        /// <param name="filename"></param>
+        public static string Upload(string filename)
+        {
+            FileInfo fileInf = new FileInfo(filename);
+            //string uri = ftpURI + fileInf.Name;
+            string picName = DateTime.Now.Ticks.ToString() + ".jpg";
+            string uri = ftpURI + picName;
+            FtpWebRequest reqFTP;
+
+            reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri(uri));
+            reqFTP.Credentials = new NetworkCredential(ftpUserID, ftpPassword);
+            reqFTP.KeepAlive = false;
+            reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
+            reqFTP.UseBinary = true;
+            reqFTP.ContentLength = fileInf.Length;
+            int buffLength = 2048;
+            byte[] buff = new byte[buffLength];
+            int contentLen;
+            FileStream fs = fileInf.OpenRead();
+            try
+            {
+                Stream strm = reqFTP.GetRequestStream();
+                contentLen = fs.Read(buff, 0, buffLength);
+                while (contentLen != 0)
+                {
+                    strm.Write(buff, 0, contentLen);
+                    contentLen = fs.Read(buff, 0, buffLength);
+                }
+                strm.Close();
+                fs.Close();
+            }
+            catch (Exception ex)
+            {
+                CommonFunction.WriteLog(ex, ex.Message);
+            }
+            return picName;
+        }
+
+        
         #endregion
     }
 }

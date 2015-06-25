@@ -147,4 +147,3 @@ E:\Github\ToolFunction\obj\Debug\ToolFunction.csproj.GenerateResource.Cache
 E:\Github\ToolFunction\obj\Debug\ToolFunction.dll
 E:\Github\ToolFunction\obj\Debug\ToolFunction.pdb
 D:\GitHub\ToolFunction\bin\Debug\DevExpress.XtraEditors.v7.2.xml
-E:\Github\ToolFunction\obj\Debug\ToolFunction.csprojResolveAssemblyReference.cache
