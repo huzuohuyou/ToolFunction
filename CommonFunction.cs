@@ -20,6 +20,7 @@ using System.Data.Odbc;
 using System.Security.Cryptography;
 using System.Net.Sockets;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace ToolFunction
 {
@@ -1927,6 +1928,48 @@ namespace ToolFunction
         }
 
         
+        #endregion
+
+        #region 操作xml
+
+        /// <summary>
+        /// 更新xml文件内节点内容
+        /// 2015-07-06 吴海龙
+        /// </summary>
+        /// <param name="p_strFilePath">文件路径</param>
+        /// <param name="p_strNodeName">节点名</param>
+        /// <param name="p_strValue">值</param>
+        public static void UpdateXmlFile(string p_strFilePath, string p_strNodeName, string p_strValue)
+        {
+            string _strFilePath = p_strFilePath;
+            string _strNodeName = p_strNodeName;
+            string _strValue = p_strValue;
+            XmlDocument doc = new XmlDocument();
+            doc.Load(_strFilePath);
+            doc.LoadXml(_strFilePath);
+            XmlNode root = doc.DocumentElement;
+            XmlNode age = root.SelectSingleNode(_strNodeName);
+            age.InnerText = p_strValue;
+            doc.Save(p_strFilePath);
+        }
+
+        /// <summary>
+        /// 更新xml字符串内节点内容
+        /// 2015-07-06 吴海龙
+        /// </summary>
+        /// <param name="p_strFilePath">xml字符串</param>
+        /// <param name="p_strNodeName">节点名</param>
+        /// <param name="p_strValue">值</param>
+        public static string UpdateHtmlStr(string p_strReplace, string p_strNodeName, string p_strValue)
+        {
+            string _strReplace = p_strReplace;
+            string _strNodeName = p_strNodeName;
+            string _strValue = p_strValue;
+            Regex reg = new Regex(@"<head>([\s\S]*)<\/head>");
+            string _strTemp = reg.Match(_strReplace).ToString();
+            string _strNew = _strReplace.Replace(_strTemp, _strValue);
+            return _strNew;
+        }
         #endregion
     }
 }
