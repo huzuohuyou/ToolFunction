@@ -848,6 +848,7 @@ namespace ToolFunction
 
         /// <summary>
         /// OleDb驱动 执行查询操作 x86平台
+        /// 1.测试Oledb 参数化sql执行，用？ 作为占位符 ；oracleclient用:参数名 作为占位符 
         /// </summary>
         /// <param name="p_strSql">查询sql语句</param>
         /// <param name="p_dicDictionary">字典参数</param>
@@ -1181,6 +1182,13 @@ namespace ToolFunction
 
         /// <summary>
         /// 采用OleDb方式驱动 执行增，删，改操作 x86平台
+        /// 1.测试Oledb 参数化sql执行，用？ 作为占位符 ；oracleclient用:参数名 作为占位符 
+        ///  SortedDictionary<string, string> _sdict = new SortedDictionary<string, string>();
+        ///  _sdict.Add("1", "whl");
+        ///  _sdict.Add("2", dongtan);
+        ///  _sdict.Add("3", DateTime.Now.ToString());
+        ///  string _strSql = "insert into DongTan(userid,message,timepoint,commentCount,agreeCount) values(?,?,?,0,0)";
+        ///  CommonFunction.OleExecuteNonQuery(_strSql, _sdict);
         /// </summary>
         /// <param name="p_strSql">操作的sql</param>
         /// <param name="p_dictParam">字典参数</param>
